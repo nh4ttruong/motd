@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your MOTD</title>
+  <style>
+    body {
+      font-family: monospace;
+      background-color: #111;
+      color: #0f0;
+      padding: 0.25rem 0.5rem;
+      white-space: pre-wrap;
+      font-size: 20px;
+    }
+
+    #joke::after {
+      content: '_';
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div id="joke">Loading...</div>
+
+  <script>
+    const jokeElement = document.getElementById("joke");
+
+    async function fetchJoke() {
+      try {
+        const response = await fetch('https://v2.jokeapi.dev/joke/Programming,Dark?format=txt&type=single');
+        if (!response.ok) throw new Error("Failed to fetch joke");
+        const joke = await response.text();
+        typeWriter(joke);
+      } catch (error) {
+        jokeElement.textContent = "Failed to load joke. Try again later.";
+        console.error(error);
+      }
+    }
+
+    function typeWriter(text, speed = 25) {
+      jokeElement.textContent = ""; // Clear loading text
+      let i = 0;
+      const interval = setInterval(() => {
+        jokeElement.textContent += text.charAt(i);
+        i++;
+        if (i >= text.length) {
+          clearInterval(interval);
+        }
+      }, speed);
+    }
+
+    fetchJoke();
+  </script>
+</body>
+</html>
